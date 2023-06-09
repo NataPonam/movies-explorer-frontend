@@ -1,4 +1,4 @@
-import './SavedCard.css';
+import '../MoviesCard/MoviesCard.css';
 
 import x from '../../images/iconX.svg';
 import movie1 from '../../images/movie1.png';
@@ -11,8 +11,10 @@ function SavedCard() {
       <ul className='card__list'>
         <li className='card'>
           <div className='card__container'>
-            <p className='card__title'>33 слова о дизайне</p>
-            <p className='card__diration'>1ч 42м</p>
+            <div className='card__wrap'>
+              <p className='card__title'>33 слова о дизайне</p>
+              <p className='card__duration'>1ч 42м</p>
+            </div>
             <button className='card__btn button'>
               <img className='card__icon' src={x} alt='иконка крестик'></img>
             </button>
@@ -25,8 +27,10 @@ function SavedCard() {
         </li>
         <li className='card'>
           <div className='card__container'>
-            <p className='card__title'>Киноальманах «100 лет дизайна»</p>
-            <p className='card__diration'>1ч 42м</p>
+            <div className='card__wrap'>
+              <p className='card__title'>Киноальманах «100 лет дизайна»</p>
+              <p className='card__duration'>1ч 42м</p>
+            </div>
             <button className='card__btn button'>
               <img className='card__icon' src={x} alt='иконка крестик'></img>
             </button>
@@ -35,8 +39,10 @@ function SavedCard() {
         </li>
         <li className='card'>
           <div className='card__container'>
-            <p className='card__title'>В погоне за Бенкси</p>
-            <p className='card__diration'>1ч 42м</p>
+            <div className='card__wrap'>
+              <p className='card__title'>В погоне за Бенкси</p>
+              <p className='card__duration'>1ч 42м</p>
+            </div>
             <button className='card__btn button'>
               <img className='card__icon' src={x} alt='иконка крестик'></img>
             </button>

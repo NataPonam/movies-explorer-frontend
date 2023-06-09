@@ -1,6 +1,4 @@
 .card {
-  box-sizing: border-box;
-  font-family: 'Inter';
   font-style: normal;
   color: var(--blacktext);
   background-color: var(--lightbeige);
@@ -10,7 +8,7 @@
   padding: 6px;
   height: 134px;
 }
-.card__diration {
+.card__duration {
   font-weight: 400;
   font-size: 11px;
   line-height: 13px;
@@ -34,6 +32,24 @@
   width: 220px;
   height: 122px;
 }
+.card__icon {
+  width: 14px;
+  height: 12px;
+}
+@media screen and (max-width: 560px) {
+  .card__container {
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 12px;
+    height: 100%;
+  }
+  .card__duration {
+    margin-bottom: 0;
+  }
+}
 @media screen and (max-width: 480px) {
   .card {
     flex-direction: column-reverse;
@@ -48,10 +64,7 @@
   }
   .card__container {
     box-sizing: border-box;
-    padding: 14px 12px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    flex-direction: row;
     width: 100%;
     max-height: 64px;
   }

@@ -23,7 +23,11 @@ function AboutMe() {
           </a>
         </div>
         <div className='student__box'>
-          <img className='student__img' src={me}></img>
+          <img
+            className='student__img'
+            src={me}
+            alt='цветущая сакура и крыша китайского дома'
+          ></img>
         </div>
       </div>
     </section>

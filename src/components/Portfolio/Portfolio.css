@@ -21,17 +21,21 @@
   width: 29px;
   height: 60px;
 }
-.portfolio__navigate {
+
+.portfolio__list {
   display: flex;
   flex-direction: column;
+}
+.portfolio__list_item{
+  border-bottom: 1px solid var(--linegray);
 }
 .portfolio__link {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--linegray);
+  
 }
-.portfolio__link:last-child {
+.portfolio__list_item:last-child {
   border-bottom: none;
   margin-bottom: -19px;
 }

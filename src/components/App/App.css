@@ -28,11 +28,18 @@
 
 .page__container {
   flex: 1 0 auto;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-style: normal;
 }
 
 * {
   margin: 0;
   padding: 0;
+}
+
+ul,
+li {
+  list-style: none;
 }
 
 .link {
@@ -47,4 +54,7 @@
 .button:hover {
   cursor: pointer;
   opacity: 0.8;
+}
+input {
+  font-family: inherit;
 }
