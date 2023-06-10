@@ -1,0 +1,269 @@
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 18px 70px;
+  background-color: #5c5c5c;
+  color: var(--whitetext);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  gap: 40px;
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header__container.menu {
+  justify-content: space-between;
+}
+
+.header__container.logo {
+  flex: 0;
+}
+
+.header__container.registration {
+  justify-content: end;
+}
+
+.header__logo {
+  width: 38px;
+  height: 38px;
+}
+
+.header__button {
+  width: 76px;
+  height: 32px;
+  background-color: var(--accent);
+  border-radius: 3px;
+  border: none;
+  margin-left: 30px;
+}
+
+.header__button_text {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--blacktext);
+}
+
+.header__text {
+  color: var(--whitetext);
+}
+
+/*movies*/
+.header-movies {
+  background-color: var(--whitebg);
+  color: var(--blacktext);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.header__menu-box {
+  display: flex;
+  gap: 16px;
+}
+
+.header__text-movies {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--blacktext);
+}
+
+.header__text-movies_accaunt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.header__text-movies_active {
+  font-size: 13px;
+  line-height: 18px;
+  margin-right: 16px;
+  color: var(--blacktext);
+}
+
+.header__button-movies {
+  margin-left: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--lightbeige);
+  cursor: pointer;
+}
+
+.header__button-menu {
+  display: none;
+  background-color: transparent;
+  border: none;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  background-image: url('../../images/menu.svg');
+  border: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+.header__text-movies_main.link {
+  display: none;
+}
+
+.header__btn-close {
+  width: 20px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+}
+
+.overlay {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .header__text-movies_main.link.active {
+    display: block;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .header__text-movies_main.link.active:hover {
+    border-bottom: 2px solid #000;
+    opacity: 1;
+  }
+
+  .overlay.active {
+    display: block;
+    background-color: #000;
+    opacity: 0.3;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 5;
+  }
+
+  .header__container.menu {
+    display: none;
+  }
+
+  .header__button-menu {
+    display: block;
+    z-index: 15;
+  }
+
+  .header__container.menu.active {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 60%;
+    background-color: var(--whitebg);
+    z-index: 10;
+  }
+
+  .header__menu-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    padding: 129px 0 621px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .header__text-movies {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 4px;
+  }
+
+  .header__text-movies:hover {
+    border-bottom: 2px solid #000;
+    opacity: 1;
+  }
+
+  .header__profile-box {
+    margin-bottom: 92px;
+  }
+
+  .header__button-menu.active {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background-image: url('../../images/closeBtn.svg');
+    width: 22px;
+    height: 22px;
+    border: none;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .header__container.menu.active {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header__container.menu.active {
+    width: 90%;
+  }
+  .header__button-menu {
+    width: 40px;
+    height: 43px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .header {
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 10px;
+    line-height: 16px;
+  }
+
+  .header__button {
+    width: 54px;
+    height: 26px;
+    margin-left: 14px;
+  }
+
+  .header__button_text {
+    font-size: 10px;
+  }
+
+  .header__button-menu {
+    width: 40px;
+    height: 43px;
+  }
+
+  .header__container.menu.active {
+    width: 100%;
+  }
+}
