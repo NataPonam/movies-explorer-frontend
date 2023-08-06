@@ -1,6 +1,23 @@
 .profile {
   height: 90vh;
 }
+.profile-message {
+  font-weight: 400;
+  font-size: 15px;
+  position: fixed;
+  top: 20%;
+  padding: 20px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  transition: all 0.6s ease-in;
+  visibility: visible;
+  opacity: 1;
+  color: var(--accent);
+}
+.profile-message.close {
+  visibility: hidden;
+  opacity: 0;
+}
 .profile__container {
   padding: 74px 0 70px;
   display: flex;
@@ -19,7 +36,16 @@
 }
 .profile__form_wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  /*justify-content: space-between;*/
+}
+.input__error-profile {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--error);
+  text-align: center;
+  margin-top: 10px;
 }
 .profile__edit {
   margin-bottom: 16px;
@@ -29,11 +55,17 @@
   border: none;
   background-color: transparent;
 }
+
+.profile__edit:disabled {
+  color: #a0a0a0;
+}
 .profile__logout {
   color: var(--error);
   font-weight: 500;
   font-size: 13px;
   line-height: 16px;
+  border: none;
+  background-color: transparent;
 }
 .profile__title {
   font-weight: 500;
@@ -49,19 +81,37 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 13px;
-  flex: 1;
 }
 
 .profile__input {
+  padding-left: 5px;
+  padding-right: 5px;
+  display: flex;
+  justify-content: space-between;
   border: none;
-  text-align: left;
+  text-align: right;
+  align-items: center;
   font-weight: 400;
   font-size: 11px;
   line-height: 13px;
-  text-align: right;
-  border: none;
   outline: none;
-  flex: 5;
+  height: 46px;
+}
+
+.profile__input.type-error {
+  border: 1px solid var(--error);
+  color: var(--error);
+  border-radius: 8px;
+}
+
+.profile__input.text-error {
+  color: var(--error);
+}
+
+.profile__input.wrapper:hover {
+  border: 1px solid var(--error);
+  border-color: var(--accent);
+  border-radius: 8px;
 }
 
 .profile__input-line {
@@ -81,7 +131,7 @@
   line-height: 17px;
   text-align: center;
   color: var(--whitetext);
-  position: absolute;
+  position: static;
   bottom: 50px;
 }
 .profile__save.active {
@@ -95,13 +145,6 @@
   color: #c2c2c2;
   position: static;
 }
-.profile__box {
-  display: flex;
-  flex-direction: column;
-}
-.profile__box.active {
-  display: none;
-}
 .profile__text-error {
   font-weight: 400;
   font-size: 11px;
@@ -110,6 +153,14 @@
   color: var(--error);
   margin-bottom: 20px;
 }
+/*.profile__box {
+  display: flex;
+  flex-direction: column;
+}
+.profile__box.active {
+  display: none;
+}*/
+
 @media screen and (max-width: 768px) {
   .profile__title {
     margin: 0 0 96px;

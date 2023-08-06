@@ -22,6 +22,32 @@
   margin-bottom: 13px;
 }
 .card__btn {
+  background-image: url(../../images/iconEpmtyHeart.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+.card__btn_liked {
+  background-image: url(../../images/iconHeart.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+.card__btn_delete {
+  background-image: url(../../images/iconX.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 14px;
+  height: 12px;
+  cursor: pointer;
   border: none;
   background-color: transparent;
 }
@@ -38,7 +64,6 @@
 }
 @media screen and (max-width: 560px) {
   .card__container {
-    
     display: flex;
     flex-direction: column;
     justify-content: space-between;

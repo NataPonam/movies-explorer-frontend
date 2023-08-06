@@ -1,25 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import '../Register/Register.css';
 import '../Header/Header.css';
 import { EMAIL } from '../../utils/constants';
 
 import logo from '../../images/logo.svg';
-function Login() {
+
+function Login({ onLogin, errorsFromApi, loggedIn }) {
+  const navigate = useNavigate();
+  const [changed, setChanged] = useState(false);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
+    watch,
   } = useForm({
     mode: 'onChange',
   });
+
   const onSubmit = (data) => {
     console.log(JSON.stringify(data));
+    onLogin(data);
     reset();
+    setChanged(false);
   };
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/movies');
+    }
+  }, [loggedIn, navigate]);
+
+  useEffect(() => {
+    watch((value, { email, password }) => setChanged(true));
+  }, [watch]);
+
   return (
     <section className='register'>
       <div className='register__container'>
@@ -38,7 +57,7 @@ function Login() {
           </lable>
           <input
             id='email'
-            //type='email'
+            type='email'
             className={
               errors.email
                 ? 'register__form_input type-error'
@@ -47,7 +66,7 @@ function Login() {
             {...register('email', {
               required: 'Поле обязательно для заполнения',
               pattern: {
-                value: EMAIL,
+                value: EMAIL || '',
                 message: 'Введен некорректный адрес электронной почты',
               },
             })}
@@ -81,12 +100,25 @@ function Login() {
               </p>
             )}
           </span>
-          <button
-            className='register__button button register__button-login'
-            type='submit'
-          >
-            Войти
-          </button>
+          <div className='input__error-wrapper'>
+            <p className='input__error message'>
+              {errorsFromApi.authorize.resStatus && changed === false
+                ? errorsFromApi.authorize.resErrorMessage
+                : ''}
+            </p>
+            <button
+              className={
+                errors?.email ||
+                errors?.password ||
+                (errorsFromApi.authorize.resStatus && changed === false)
+                  ? 'register__button-off register__button'
+                  : 'register__button button'
+              }
+              type='submit'
+            >
+              Войти
+            </button>
+          </div>
         </form>
         <div className='register__box'>
           <p className='register__text'>Ещё не зарегистрированы?</p>
