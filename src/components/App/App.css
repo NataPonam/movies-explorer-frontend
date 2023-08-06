@@ -27,11 +27,16 @@
 }
 
 .page__container {
-  flex: 1 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* flex: 1 0 auto;*/
   font-family: 'Inter', Arial, Helvetica, sans-serif;
   font-style: normal;
 }
-
+section {
+  flex: 1;
+}
 * {
   margin: 0;
   padding: 0;

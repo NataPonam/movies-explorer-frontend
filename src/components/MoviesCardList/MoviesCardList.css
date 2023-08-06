@@ -1,9 +1,9 @@
 .card__list {
-  padding: 70px 70px 0 70px;
+  padding: 70px;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
 }
 
 .card__button-more {
@@ -17,14 +17,25 @@
   line-height: 15px;
   text-align: center;
   color: var(--blacktext);
-  margin: 50px auto 80px;
+  margin: 0 auto 80px;
   display: block;
+}
+
+.cards__error-message {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--error);
+  text-align: center;
 }
 
 @media screen and (max-width: 768px) {
   .card__list {
     padding: 60px 30px 30px;
     margin-bottom: 0;
+  }
+  .card__button-more {
+    margin-top: 50px;
   }
 }
 @media screen and (max-width: 480px) {
