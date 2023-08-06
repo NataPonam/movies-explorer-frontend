@@ -59,6 +59,7 @@ const checkResponseLogin = (res) => {
         : ''),
   });
 };
+
 const checkResponseProfile = (res) => {
   if (res.ok === true) {
     return res.json();
