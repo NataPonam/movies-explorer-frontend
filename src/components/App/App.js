@@ -22,6 +22,7 @@ import Notfound from '../Notfound/Notfound';
 import * as api from '../../utils/MainApi';
 import * as movieApi from '../../utils/MoviesApi';
 
+
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
