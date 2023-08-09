@@ -1,17 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
 
-function MoviesCard({
-  card,
-  cards,
-  index,
-  isSaved,
-  liked,
-  handleCardLike,
-  handleDeleteLike,
-  likedCards,
-}) {
+function MoviesCard({ card, handleCardLike, handleDeleteLike, likedCards }) {
   let { pathname } = useLocation();
   const URL = 'https://api.nomoreparties.co/';
   const cardURL = card.image.url ? `${URL}${card.image.url}` : card.image;
@@ -50,11 +41,7 @@ function MoviesCard({
               className={
                 isLikePushed ? 'card__btn_liked button' : 'card__btn button'
               }
-              //onClick={clickSelectButton}
-              //onClick={handleLikeSelectButton}
-              //onClick={() => handleLikeClick}
               onClick={() =>
-                //handleCardLike(card, isLikePushed)
                 handleCardLike(card, isLikePushed, findCardById?._id)
               }
             ></button>
@@ -63,8 +50,6 @@ function MoviesCard({
             <button
               className='card__btn_delete'
               onClick={() => handleDeleteLike(card._id)}
-              //onClick={() => handleLikeClick}
-              //onClick={() => handleCardLike(card, cardId)}
             ></button>
           )}
         </div>
@@ -77,24 +62,3 @@ function MoviesCard({
 }
 
 export default MoviesCard;
-
-/* function onCardClick() {
-    if (liked) {
-      onCardDelete(savedMovies.filter((m) => m.movieId === card.id)[0]);
-    } else {
-      handleLikeClick(card);
-    }*/
-/*     {
-            //отображение иконки
-            isSaved ? ( //если фильм сохранен покажи крестик
-              <button className='card__btn_delete button'>
-                <img className='card__icon' src={x} alt='иконка крестик'></img>
-              </button>
-            ) : ()
-            //иначе покажи иконку сердечко
-            //меняем класс и соответстенно картинку через бэкграунд
-            <button
-              className={cardId ? 'card__btn_liked button' : 'card__btn button'}
-              onClick={clickSelectButton}
-            ></button>
-          } */

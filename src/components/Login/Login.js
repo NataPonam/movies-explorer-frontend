@@ -16,7 +16,6 @@ function Login({ onLogin, errorsFromApi, loggedIn }) {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
     watch,
   } = useForm({
     mode: 'onChange',
@@ -25,7 +24,7 @@ function Login({ onLogin, errorsFromApi, loggedIn }) {
   const onSubmit = (data) => {
     console.log(JSON.stringify(data));
     onLogin(data);
-    reset();
+    // reset();
     setChanged(false);
   };
 
@@ -110,7 +109,8 @@ function Login({ onLogin, errorsFromApi, loggedIn }) {
               className={
                 errors?.email ||
                 errors?.password ||
-                (errorsFromApi.authorize.resStatus && changed === false)
+                errorsFromApi.authorize.resStatus ||
+                changed === false
                   ? 'register__button-off register__button'
                   : 'register__button button'
               }

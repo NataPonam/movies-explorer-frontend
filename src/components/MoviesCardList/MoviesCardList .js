@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react';
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
-import Preloader from '../Preloader/Preloader';
+
 import { useLocation } from 'react-router-dom';
 
 function MoviesCardList({
   cards,
   handleCardLike,
   handleDeleteLike,
-  preloader,
   messageError,
   errorsFromApi,
   likedCards,
 }) {
   const [shownCards, setShownCards] = useState(0);
-  const [islength, setIsLength] = useState(true);
+  const [islength, setIsLength] = useState(false);
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (window.innerWidth > 320) {
-      setShownCards(7);
+    if (window.innerWidth > 480) {
+      setShownCards(4);
     } else {
       setShownCards(5);
     }
@@ -29,10 +28,10 @@ function MoviesCardList({
   // только при дисплее в 320px - рендер по 5 карточек
   //если более 320px - реднер по 7 карточек
   function handleMore() {
-    if (window.innerWidth > 320) {
-      setShownCards(shownCards + 7);
+    if (window.innerWidth > 480) {
+      setShownCards(shownCards + 4);
     } else {
-      setShownCards(shownCards + 5);
+      setShownCards(shownCards + 2);
     }
   }
 
@@ -41,12 +40,18 @@ function MoviesCardList({
     if (cards !== null) {
       let newCard = cards.length;
       if (newCard > shownCards) {
-        setIsLength(false);
-      } else {
         setIsLength(true);
+      } else {
+        setIsLength(false);
       }
     }
   }, [cards, shownCards]);
+
+  useEffect(() => {
+    if (cards === null && !messageError) {
+      setIsLength(false);
+    }
+  }, [cards, messageError]);
 
   return (
     <>
@@ -57,30 +62,20 @@ function MoviesCardList({
         </p>
       ) : (
         <section className='cards'>
-          {messageError ? (
-            <p className='cards__error-message'>Ничего не найдено</p>
-          ) : (
-            <ul className='card__list'>
-              {preloader ? (
-                <Preloader />
-              ) : (
-                cards
-                  ?.slice(0, shownCards)
-                  .map((card) => (
-                    <MoviesCard
-                      key={card.id || card.movieId}
-                      card={card}
-                      handleCardLike={handleCardLike}
-                      handleDeleteLike={handleDeleteLike}
-                      likedCards={likedCards}
-                    />
-                  ))
-              )}
-            </ul>
-          )}
+          <ul className='card__list'>
+            {cards?.slice(0, shownCards).map((card) => (
+              <MoviesCard
+                key={card.id || card.movieId}
+                card={card}
+                handleCardLike={handleCardLike}
+                handleDeleteLike={handleDeleteLike}
+                likedCards={likedCards}
+              />
+            ))}
+          </ul>
 
           {pathname === '/movies' ? (
-            islength === false || !messageError ? (
+            islength === true && !messageError ? (
               <button className='card__button-more button' onClick={handleMore}>
                 Ещё
               </button>

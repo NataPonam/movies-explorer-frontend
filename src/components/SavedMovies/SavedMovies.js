@@ -14,90 +14,94 @@ function SavedMovies({
   likedCards,
   errorsFromApi,
 }) {
-  const [showedCards, setShowedCards] = useState(null); //список карточек для отображения
-  const [queryValues, setQueryValues] = useState(null); //запрос пользователя
   const [messageError, setMessageError] = useState(false); //сообщение об ошибке
-  const [checkbox, setCheckbox] = useState(false); //состояние кнопки чекбокса по умолчанию false -зеленая
-
-  //фильтр фильмов по слову
-  const filterMovies = (cards, searchQuery) => {
-    return cards.filter((card) => {
-      const movieRu = String(card.nameRU).toLowerCase();
-      const movieEn = String(card.nameEN).toLowerCase();
-      return movieRu.includes(searchQuery) || movieEn.includes(searchQuery);
-    });
-  };
-
-  //функция фильтрации фильмов по продолжительности
-  function handleDuration(cards) {
-    return cards.filter((card) => card.duration < 40);
-  }
-
-  //функции сообщений
-  function showMessage() {
-    setMessageError(true);
-  }
-  function hideMessage() {
-    setMessageError(false);
-  }
+  const [showedCards, setShowedCards] = useState([]); //список карточек для отображения
+  const [searchQuery, setSearchQuery] = useState({});
+  const searchedMovies = localStorage.getItem('searchedLikedMovies');
+  const queryHistory = localStorage.getItem('queryLikedHistory');
 
   useEffect(() => {
-    if (likedCards.length && queryValues) {
-      const cards = filterMovies(likedCards, queryValues);
-      // setFiltredFilmsByQuery(cards);
-      setShowedCards(cards);
-      cards.length === 0 ? showMessage() : hideMessage();
-    }
-  }, [likedCards, queryValues]);
-
-  //переключатель чек-бокса
-  function handleCheck() {
-    setCheckbox(!checkbox);
-  }
-
-  useEffect(() => {
-    if (checkbox === true) {
-      setShowedCards(handleDuration(likedCards));
-      if (handleDuration(likedCards).length === 0) {
-        showMessage();
-      }
-    }
-  }, [checkbox, likedCards]);
-
-  useEffect(() => {
-    if (checkbox === false) {
+    if (searchedMovies) {
+      setShowedCards(JSON.parse(searchedMovies));
+    } else {
       setShowedCards(likedCards);
-      hideMessage();
     }
-  }, [checkbox, likedCards]);
+  }, [searchedMovies, likedCards, searchQuery]);
 
-  //поиск фильма
-  function searchMovie(data) {
-    const likedCardList = JSON.parse(localStorage.getItem('likedCards'));
-    setShowedCards(likedCardList);
+  useEffect(() => {
+    if (queryHistory) {
+      setSearchQuery(JSON.parse(queryHistory));
+    } else {
+      setSearchQuery({ ...queryHistory, searchText: '' });
+    }
+  }, [queryHistory, likedCards]);
 
-    setQueryValues(data);
-    console.log(likedCardList);
+  function filterMovies(query) {
+    localStorage.setItem('queryLikedHistory', JSON.stringify(query));
+
+    let filtered = [];
+
+    if (query.isShortFilmChecked) {
+      filtered = likedCards.filter((card) => {
+        const shorts = card.duration <= 40;
+        const movieRu = String(card.nameRU)
+          .toLowerCase()
+          .includes(query.searchText.toLowerCase());
+        const movieEn = String(card.nameEN)
+          .toLowerCase()
+          .includes(query.searchText.toLowerCase());
+
+        return (movieRu && shorts) || (movieEn && shorts);
+      });
+
+      setShowedCards(filtered);
+      localStorage.setItem('searchedLikedMovies', JSON.stringify(filtered));
+    } else if (!query.isShortFilmChecked) {
+      filtered = likedCards.filter((card) => {
+        const movieRu = String(card.nameRU)
+          .toLowerCase()
+          .includes(query.searchText.toLowerCase());
+        const movieEn = String(card.nameEN)
+          .toLowerCase()
+          .includes(query.searchText.toLowerCase());
+        return movieRu || movieEn;
+      });
+
+      setShowedCards(filtered);
+      localStorage.setItem('searchedLikedMovies', JSON.stringify(filtered));
+    }
   }
+  const handleReset = () => {
+    setShowedCards(likedCards);
+    setSearchQuery({});
+    localStorage.removeItem('searchedLikedMovies');
+    localStorage.removeItem('queryLikedHistory');
+  };
 
   return (
     <>
       <Header loggedIn={loggedIn} />
       <section className='saved'>
         <SearchForm
-          onSearch={searchMovie}
-          checkbox={checkbox}
-          changeCheckbox={handleCheck}
+          onFilter={filterMovies}
+          searchQuery={searchQuery}
+          onReset={handleReset}
         />
-        <MoviesCardList
-          cards={showedCards}
-          messageError={messageError}
-          preloader={loading}
-          errorsFromApi={errorsFromApi}
-          likedCards={likedCards}
-          handleDeleteLike={handleDeleteLike}
-          handleCardLike={handleCardLike}
-        />
+        {showedCards.length ? (
+          <MoviesCardList
+            cards={showedCards}
+            messageError={messageError}
+            preloader={loading}
+            errorsFromApi={errorsFromApi}
+            likedCards={likedCards}
+            handleDeleteLike={handleDeleteLike}
+            handleCardLike={handleCardLike}
+          />
+        ) : (
+          searchedMovies && (
+            <p className='cards__error-message'>Ничего не найдено</p>
+          )
+        )}
       </section>
       <Footer />
     </>

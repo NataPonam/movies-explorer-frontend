@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 import '../Register/Register.css';
 import HeaderMovie from '../Header/HeaderMovie';
@@ -24,7 +24,7 @@ function Profile({
   const inputCheck =
     isEdit === false ||
     (name === currentUser.name && email === currentUser.email);
-
+  //const navigate = useNavigate();
   const {
     register,
     formState: { errors },
@@ -218,18 +218,3 @@ function Profile({
   );
 }
 export default Profile;
-
-/////////////
-/*      <div
-            className={`profile__box ${active ? 'active' : ''}`}
-            active={active}
-            setActive={setActive}
-          >
-            {isValid === false && isShowBtn === false ? (
-              <p className='input__error message'>
-                {errorsFromApi.profile.resErrorMessage}
-              </p>
-            ) : (
-              ''
-            )}
-          </div> */

@@ -1,16 +1,19 @@
-import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import './FilterCheckbox.css';
 
-function FilterCheckbox({ checkbox, changeCheckbox }) {
+function FilterCheckbox({ isChecked, onCheck, searchText }) {
+  // const { pathname } = useLocation();
+  console.log(searchText);
+
   return (
     <form className='checkbox__form'>
       <input
         className='checkbox__input'
-        id='checkbox-input'
         type='checkbox'
-        checked={checkbox}
-        onChange={changeCheckbox}
+        checked={isChecked || ''}
+        onChange={onCheck}
       ></input>
+
       <label className='checkbox__lable' for='checkbox-input'>
         Короткометражки
       </label>
@@ -19,4 +22,3 @@ function FilterCheckbox({ checkbox, changeCheckbox }) {
 }
 
 export default FilterCheckbox;
-//

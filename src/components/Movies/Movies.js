@@ -1,165 +1,120 @@
 import { useState, useEffect } from 'react';
 import './Movies.css';
-import HeaderMovie from '../Header/HeaderMovie';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList ';
 import Footer from '../Footer/Footer';
 import Header from '../Header/Header';
+import Preloader from '../Preloader/Preloader';
 
 function Movies({
-  allFilms, //состояние передача всех карточек
+  allFilms,
   handleCardLike,
   errorsFromApi,
-  showAllFilms,
   loading,
   loggedIn,
   likedCards,
+  handlePreloaderOn,
+  handlePreloaderOff,
 }) {
-  const [allMovies, setAllMovies] = useState([]); // все фильмы
-  const [showedCards, setShowedCards] = useState(null); //список карточек для отображения
-  const [filtredFilmsByQuery, setFiltredFilmsByQuery] = useState(null); // отфильтрованные по запросу
-  const [queryValues, setQueryValues] = useState(null); //запрос пользователя
-  const [messageError, setMessageError] = useState(false); //сообщение об ошибке
-  const [filteredMoviesByCheckbox, setFilteredMoviesByCheckbox] = useState([]); //отфильтрованные по запросу и чекбоксу
-  const [checkbox, setCheckbox] = useState(false); //состояние кнопки чекбокса по умолчанию false -зеленая
+  const [showedCards, setShowedCards] = useState([]); //список карточек для отображения
+  const [searchQuery, setSearchQuery] = useState({});
+  const searchedMovies = localStorage.getItem('searchedMovies');
+  const queryHistory = localStorage.getItem('queryHistory');
 
   useEffect(() => {
-    if (localStorage.searchedMovies) {
-      const movies = JSON.parse(localStorage.getItem('searchedMovies'));
-      setShowedCards(movies);
-
-      if (localStorage.shortMovies && checkbox === true) {
-        const movies = JSON.parse(localStorage.getItem('shortMovies'));
-        setShowedCards(movies);
-      }
-    } else {
-      showMessage();
+    if (searchedMovies) {
+      setShowedCards(JSON.parse(searchedMovies));
     }
-  }, [checkbox]);
+  }, [searchedMovies]);
 
   useEffect(() => {
-    if (!localStorage.shortMovies && checkbox === true) {
-      showMessage();
-    } else {
-      hideMessage();
+    if (queryHistory) {
+      setSearchQuery(JSON.parse(queryHistory));
     }
-  });
+  }, [queryHistory]);
 
-  //если у отфильтрованных фильмов по поиску есть длина,то покажи их
-  //если у отфильтр по чекбоксу есть длина, то покажи их
-  //изменяем стейт у карточек для рендера showedCards
-  useEffect(() => {
-    //если фильмы отфтльтр по запросу
-    if (filtredFilmsByQuery?.length) {
-      const cards = setSelect(filtredFilmsByQuery);
-      setShowedCards(cards); //отрендери их
-      localStorage.setItem('searchedMovies', JSON.stringify(cards));
-
-      if (checkbox && filteredMoviesByCheckbox.length === 0) {
-        showMessage();
-      }
-      if (!checkbox) {
-        hideMessage();
-      }
+  function filterMovies(query) {
+    if (!showedCards.length) {
+      handlePreloaderOn();
     }
-    if (filteredMoviesByCheckbox?.length && checkbox === true) {
-      const cards = setSelect(filteredMoviesByCheckbox);
-      setShowedCards(cards); //отрендери их
-      localStorage.setItem('shortMovies', JSON.stringify(cards));
+    setTimeout(
+      () => {
+        let filtered = [];
+        localStorage.setItem('queryHistory', JSON.stringify(query));
 
-      if (!checkbox) {
-        //если чек-бокс выключен верни обратно фильмы по запросу
-        hideMessage();
-        const cards = setSelect(filtredFilmsByQuery);
-        setShowedCards(cards);
-      }
-    }
-    if (!filtredFilmsByQuery?.length) {
-      showMessage();
-    }
-  }, [filtredFilmsByQuery, filteredMoviesByCheckbox, checkbox]);
+        if (query.isShortFilmChecked) {
+          filtered = allFilms.filter((card) => {
+            const shorts = card.duration <= 40;
+            const movieRu = String(card.nameRU)
+              .toLowerCase()
+              .includes(query.searchText.toLowerCase());
+            const movieEn = String(card.nameEN)
+              .toLowerCase()
+              .includes(query.searchText.toLowerCase());
 
-  //фильтр фильмов по слову
-  const filterMovies = (cards, searchQuery) => {
-    return cards.filter((card) => {
-      const movieRu = String(card.nameRU).toLowerCase();
-      const movieEn = String(card.nameEN).toLowerCase();
-      return movieRu.includes(searchQuery) || movieEn.includes(searchQuery);
-    });
+            return (movieRu && shorts) || (movieEn && shorts);
+          });
+
+          setShowedCards(filtered);
+          localStorage.setItem('searchedMovies', JSON.stringify(filtered));
+        } else if (!query.isShortFilmChecked) {
+          filtered = allFilms.filter((card) => {
+            const movieRu = String(card.nameRU)
+              .toLowerCase()
+              .includes(query.searchText.toLowerCase());
+            const movieEn = String(card.nameEN)
+              .toLowerCase()
+              .includes(query.searchText.toLowerCase());
+            return movieRu || movieEn;
+          });
+
+          setShowedCards(filtered);
+          localStorage.setItem('searchedMovies', JSON.stringify(filtered));
+        }
+
+        handlePreloaderOff();
+      },
+      showedCards.length ? 0 : 1000
+    );
+  }
+
+  const handleReset = () => {
+    setShowedCards([]);
+    setSearchQuery({});
+    localStorage.removeItem('searchedMovies');
+    localStorage.removeItem('queryHistory');
   };
-
-  //функция фильтрации фильмов по продолжительности
-  function handleDuration(cards) {
-    return cards.filter((card) => card.duration < 40);
-  }
-
-  //переключатель чек-бокса
-  function handleCheck() {
-    //при клике устанавливаем checked в противоположное состояние
-    setCheckbox(!checkbox);
-
-    if (!checkbox && filtredFilmsByQuery !== null) {
-      handleDuration(filtredFilmsByQuery);
-      setFilteredMoviesByCheckbox(handleDuration(filtredFilmsByQuery));
-    }
-  }
-
-  useEffect(() => {
-    if (allMovies.length && queryValues) {
-      const cards = filterMovies(allMovies, queryValues);
-      setFiltredFilmsByQuery(cards);
-      cards.length === 0 ? showMessage() : hideMessage();
-    }
-  }, [allMovies, queryValues]);
-
-  //функции сообщений
-  function showMessage() {
-    setMessageError(true);
-  }
-  function hideMessage() {
-    setMessageError(false);
-  }
-
-  useEffect(() => {
-    if (allFilms) {
-      setAllMovies(allFilms);
-    }
-  }, [allFilms]);
-
-  //поиск фильма
-  function searchMovie(data) {
-    showAllFilms();
-    setQueryValues(data);
-  }
-
-  function setSelect(cards) {
-    return cards.map((card) => {
-      return card;
-    });
-  }
 
   return (
     <>
       <Header loggedIn={loggedIn} />
       <section className='movies'>
         <SearchForm
-          showAllFilms={showAllFilms}
-          onSearch={searchMovie}
-          checkbox={checkbox}
-          changeCheckbox={handleCheck}
+          onFilter={filterMovies}
+          searchQuery={searchQuery}
+          onReset={handleReset}
         />
-        <MoviesCardList
-          cards={showedCards}
-          messageError={messageError}
-          preloader={loading}
-          errorsFromApi={errorsFromApi}
-          //isReqErr={isReqErr}
-          likedCards={likedCards}
-          handleCardLike={handleCardLike}
-        />
+        {loading ? (
+          <Preloader />
+        ) : showedCards.length ? (
+          <MoviesCardList
+            cards={showedCards}
+            preloader={loading}
+            errorsFromApi={errorsFromApi}
+            likedCards={likedCards}
+            handleCardLike={handleCardLike}
+          />
+        ) : (
+          searchedMovies && (
+            <p className='cards__error-message'>Ничего не найдено</p>
+          )
+        )}
       </section>
       <Footer />
     </>
   );
 }
+
 export default Movies;
+
+  

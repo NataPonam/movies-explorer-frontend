@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
@@ -7,14 +7,13 @@ import '../Header/Header.css';
 import logo from '../../images/logo.svg';
 import { EMAIL } from '../../utils/constants';
 
-
-
 const Register = ({ onRegister, errorsFromApi }) => {
+  const [changed, setChanged] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    watch,
   } = useForm({
     mode: 'onChange',
     defaultValues: { name: '', email: '', password: '' },
@@ -22,8 +21,11 @@ const Register = ({ onRegister, errorsFromApi }) => {
 
   function handleSubmitForm(formValues) {
     onRegister(formValues);
-    reset();
   }
+
+  useEffect(() => {
+    watch((value, { name, email, password }) => setChanged(true));
+  }, [watch]);
 
   return (
     <section className='register'>
@@ -116,11 +118,7 @@ const Register = ({ onRegister, errorsFromApi }) => {
           </span>
           <div className='input__error-wrapper'>
             <p className='input__error message'>
-              {errorsFromApi.register.resStatus === 400 ||
-              401 ||
-              403 ||
-              409 ||
-              500
+              {errorsFromApi.register.resStatus
                 ? errorsFromApi.register.resErrorMessage
                 : ''}
             </p>
@@ -129,7 +127,8 @@ const Register = ({ onRegister, errorsFromApi }) => {
                 errors?.name ||
                 errors?.email ||
                 errors?.password ||
-                errorsFromApi.register.resStatus
+                errorsFromApi.register.resStatus ||
+                changed === false
                   ? 'register__button-off register__button'
                   : 'register__button button'
               }
@@ -152,98 +151,3 @@ const Register = ({ onRegister, errorsFromApi }) => {
 };
 
 export default Register;
-
-/* Старая версия оформления формы, без использования react-hook-form
-
-  /*const Register = ({ onRegister }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const resetForm = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const values = {};
-    values.name = name;
-    values.email = email;
-    values.password = password;
-
-    onRegister(values);
-    console.log('работает');
-    console.log(values);
-    resetForm();
-  };
-
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-  function handleChangeEmail(e) {
-    setEmail(e.target.value);
-  }
-
-  function handleChangePassword(e) {
-    setPassword(e.target.value);
-  }
-
-  return (
-    <section className='register'>
-      <div className='register__container'>
-        <img className='header__logo' src={logo} alt='логотип сайта кружок' />
-        <h1 className='register__title'>Добро пожаловать!</h1>
-        <form className='register__form' onSubmit={handleSubmit}>
-          <lable for='name' className='register__form_lable'>
-            Имя
-          </lable>
-          <input
-            id='name'
-            className='register__form_input'
-            name='name'
-            onChange={handleChangeName}
-            value={name || ''}
-          />
-
-          <lable for='email' className='register__form_lable'>
-            E-mail
-          </lable>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            className='register__form_input'
-            onChange={handleChangeEmail}
-            value={email || ''}
-            required
-          />
-
-          <lable for='password' className='register__form_lable'>
-            Пароль
-          </lable>
-          <input
-            id='password'
-            type='password'
-            className='register__form_input'
-            name='password'
-            value={password || ''}
-            onChange={handleChangePassword}
-          />
-
-          <button className='register__button button' type='submit'>
-            Зарегистрироваться
-          </button>
-        </form>
-        <div className='register__box'>
-          <p className='register__text'>Уже зарегистрированы?</p>
-          <Link to='/signin' className='register__link link'>
-            Войти
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}; */

@@ -7,7 +7,6 @@ import AboutMe from '../AboutMe/AboutMe';
 import Portfolio from '../Portfolio/Portfolio';
 import Footer from '../Footer/Footer';
 
-
 function Main({ loggedIn }) {
   return (
     <>

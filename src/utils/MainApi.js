@@ -2,7 +2,8 @@
 
 export const URL = 'https://api.natapo.nomoredomains.monster';
 
-//export const URL = 'natapo.nomoredomains.monster';
+////export const URL = 'natapo.nomoredomains.monster';
+//const URL =  'http://localhost:3000';
 
 const checkResponse = (res) => {
   if (res.ok === true) {

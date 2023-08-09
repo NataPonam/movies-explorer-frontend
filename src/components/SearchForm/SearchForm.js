@@ -1,37 +1,67 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './SearchForm.css';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 import loupe from '../../images/loupe.svg';
+import x from '../../images/iconX.svg';
 
-function SearchForm({ onSearch, checkbox, changeCheckbox }) {
-  const [request, setRequest] = useState(''); //запрос пользователя
-  const [reqError, setReqError] = useState(false); //ошибка при запросе пользователя
-  const { pathname } = useLocation();
+function SearchForm({ onFilter, searchQuery, onReset }) {
+  //const { pathname } = useLocation();
+  const [searchText, setSearchText] = useState('');
+  const isChecked = JSON.parse(localStorage.getItem('filterCheckBox'));
+  const [isShortFilmChecked, setIsShortFilmChecked] = useState(isChecked);
+  const [reqError, setReqError] = useState(false);
 
-  //функция изменения поля ввода
-  function handleChangeForm(e) {
-    setRequest(e.target.value);
-
-    if (pathname === '/movies') {
-      localStorage.removeItem('shortMovies');
-      localStorage.removeItem('searchedMovies');
+  useEffect(() => {
+    if (searchQuery.searchText) {
+      setSearchText(searchQuery.searchText);
     }
-    if (pathname === '//saved-movies') {
-      localStorage.removeItem('likedCards');
-    }
-  }
+  }, [searchQuery.searchText]);
 
-  //сабмит формы
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (request.length === 0) {
-      setReqError(true);
+  const handleChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const checkFilterBox = () => {
+    if (searchText !== '') {
+      setIsShortFilmChecked(!isShortFilmChecked);
+
+      onFilter({
+        searchText: searchText,
+        isShortFilmChecked: !isShortFilmChecked,
+      });
     } else {
-      setReqError(false);
-      onSearch(request); //то, что ввели в поиске
+      setIsShortFilmChecked(!isShortFilmChecked);
+
+      onFilter({
+        searchText: searchQuery.searchText,
+        isShortFilmChecked: !isShortFilmChecked,
+      });
     }
-  }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    /*  if (pathname === '/movies') {
+      localStorage.removeItem('queryHistory');
+      localStorage.removeItem('searchedMovies');
+    
+    }
+    if (pathname === '/saved-movies') {
+      localStorage.removeItem('searchedLikedMovies');
+      localStorage.removeItem('queryLikedHistory');
+      //;
+    }*/
+
+    if (!searchText) {
+      setReqError(true);
+
+      return;
+    } else {
+      onFilter({ searchText, isShortFilmChecked });
+    }
+  };
 
   return (
     <div className='search__container'>
@@ -42,22 +72,38 @@ function SearchForm({ onSearch, checkbox, changeCheckbox }) {
           type='text'
           className='search__input'
           placeholder='Фильм'
-          value={request || ''}
-          onChange={handleChangeForm}
+          value={searchText || ''}
+          onChange={handleChange}
         ></input>
+
+        <button
+          className='clear__button'
+          type='submit'
+          onClick={() => {
+            onReset();
+            setSearchText('');
+          }}
+        >
+          <img src={x} alt='иконка лупа'></img>
+        </button>
+
         <button className='search__button button' type='submit'>
           <img src={loupe} alt='иконка лупа'></img>
         </button>
       </form>
 
-      {reqError && (
+      {reqError && !searchText && (
         <span className='input__error'>
           <p className='input__error_text search'>
             Нужно ввести ключевое слово
           </p>
         </span>
       )}
-      <FilterCheckbox checkbox={checkbox} changeCheckbox={changeCheckbox} />
+      <FilterCheckbox
+        isChecked={searchQuery.isShortFilmChecked}
+        onCheck={checkFilterBox}
+        searchText={searchText}
+      />
     </div>
   );
 }

@@ -18,21 +18,17 @@ import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Notfound from '../Notfound/Notfound';
-
 import * as api from '../../utils/MainApi';
 import * as movieApi from '../../utils/MoviesApi';
-
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentUser, setCurrentUser] = useState({});
-
   const [likedCards, setLikedCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-
   const [isReqSuccess, setIsReqSuccess] = useState(false);
-  const [isMessageSuccess, setIsMessageSuccess] = useState(false); //показать сообщение об удачном сохранении данных
+  const [isMessageSuccess, setIsMessageSuccess] = useState(false);
   const [allFilms, setAllFilms] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -42,6 +38,22 @@ function App() {
     profile: {},
     movies: {},
   });
+
+  //функции прелоадера
+  function handlePreloaderOn() {
+    setLoading(true);
+  }
+  function handlePreloaderOff() {
+    setLoading(false);
+  }
+
+  //гадская функция показа и скрытия сообщения о сохранении данных
+  function handleShowMessage() {
+    setIsMessageSuccess(true);
+    setTimeout(() => {
+      setIsMessageSuccess(false);
+    }, 3000);
+  }
 
   //вход по логину singin
   function onLogin({ email, password }) {
@@ -58,7 +70,6 @@ function App() {
         setErrorsFromApi({ ...errorsFromApi, authorize: err });
       });
   }
-
   //регистрация пользователя signup
   function onRegister({ name, email, password }) {
     return api
@@ -73,24 +84,6 @@ function App() {
         console.log(err);
       });
   }
-
-  //выход из профиля (удаление пользователя из localStorage)
-  function handleExit() {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('likedCards');
-    localStorage.clear();
-    navigate('/');
-    setLoggedIn(false);
-  }
-
-  //гадская функция показа и скрытия сообщения о сохранении данных
-  function handleShowMessage() {
-    setIsMessageSuccess(true);
-    setTimeout(() => {
-      setIsMessageSuccess(false);
-    }, 3000);
-  }
-
   //редактирование профиля
   function handleEditProfile(user) {
     api
@@ -123,17 +116,33 @@ function App() {
   }
 
   function handleDeleteLike(id) {
+    const searchedLikedMovies = JSON.parse(
+      localStorage.getItem('searchedLikedMovies')
+    );
     api
       .deleteCard(id)
       .then((res) => {
         //создай новый массив отфильтрованных
         const newListCards = likedCards.filter((card) => card._id !== id);
         setLikedCards(newListCards);
+
+        if (searchedLikedMovies) {
+          const newListCardsUpdate = searchedLikedMovies.filter(
+            (card) => card._id !== id
+          );
+          localStorage.setItem(
+            'searchedLikedMovies',
+            JSON.stringify(newListCardsUpdate)
+          );
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   }
+  useEffect(() => {
+    loggedIn && localStorage.setItem('savedMovies', JSON.stringify(likedCards));
+  }, [likedCards, loggedIn]);
 
   //удаление ошибок при переходе на другие страницы
   useEffect(() => {
@@ -153,6 +162,7 @@ function App() {
         .checkToken(token)
         .then((res) => {
           setLoggedIn(true);
+          navigate(location.pathname);
         })
         .catch((err) => {
           console.log(err);
@@ -181,30 +191,35 @@ function App() {
         .catch((err) => console.log(err));
   }, [loggedIn]);
 
-  //функции прелоадера
-  function handlePreloaderOn() {
-    setLoading(true);
-  }
-  function handlePreloaderOff() {
-    setLoading(false);
-  }
+  useEffect(() => {
+    if (loggedIn === true) {
+      if (localStorage.getItem('beatfilmMovies')) {
+        setAllFilms(JSON.parse(localStorage.getItem('beatfilmMovies')));
+      } else {
+        movieApi
+          .getCards()
+          .then((cards) => {
+            setAllFilms(cards);
+            localStorage.setItem('beatfilmMovies', JSON.stringify(cards));
+            setErrorsFromApi({ ...errorsFromApi, movies: {} });
+          })
+          .catch((err) => {
+            setErrorsFromApi({ ...errorsFromApi, movies: err });
+          })
+          .finally(() => {
+            handlePreloaderOff();
+          });
+      }
+    }
+  }, [loggedIn]);
 
-  function showAllFilms() {
-    handlePreloaderOn();
-    return movieApi
-      .getCards()
-      .then((cards) => {
-        setAllFilms(cards);
-        setErrorsFromApi({ ...errorsFromApi, movies: {} });
-        handlePreloaderOff();
-      })
-      .catch((err) => {
-        setErrorsFromApi({ ...errorsFromApi, movies: err });
-      })
-      .finally(() => {
-        handlePreloaderOff();
-      });
-  }
+  //выход из профиля (удаление пользователя из localStorage)
+  const handleExit = () => {
+    setLoggedIn(false);
+    localStorage.clear();
+    setCurrentUser({});
+    navigate('/');
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -220,10 +235,11 @@ function App() {
                   handleCardLike={handleCardLike}
                   loading={loading}
                   errorsFromApi={errorsFromApi}
-                  showAllFilms={showAllFilms}
                   allFilms={allFilms}
                   loggedIn={loggedIn}
                   likedCards={likedCards}
+                  handlePreloaderOn={handlePreloaderOn}
+                  handlePreloaderOff={handlePreloaderOff}
                 />
               }
             />
@@ -235,7 +251,6 @@ function App() {
                   handleCardLike={handleCardLike}
                   loading={loading}
                   errorsFromApi={errorsFromApi}
-                  showAllFilms={showAllFilms}
                   allFilms={allFilms}
                   loggedIn={loggedIn}
                   likedCards={likedCards}
@@ -251,6 +266,7 @@ function App() {
                   onExit={handleExit}
                   onEditProfile={handleEditProfile}
                   loggedIn={loggedIn}
+                  setLoggedIn={setLoggedIn}
                   isReqSuccess={isReqSuccess}
                   errorsFromApi={errorsFromApi}
                   isMessageSuccess={isMessageSuccess}
@@ -282,7 +298,7 @@ function App() {
               }
             />
 
-            <Route path='*' element={<Notfound />} />
+            <Route path='*' element={<Notfound loggedIn={loggedIn} />} />
           </Routes>
         </div>
       </div>
@@ -291,21 +307,3 @@ function App() {
 }
 
 export default App;
-
-/*useEffect(() => {
-    api.getAllCards().then((data) => console.log(data));
-  });*/
-/*const fetchAllMovies = () => {
-    fetch('https://api.nomoreparties.co/beatfilm-movies', {
-      method: 'GET',
-      headers: {
-        //'Accept': 'application/json',
-        'Content-Type': 'aplication/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        //  updateMovies(res);
-      });
-  };*/

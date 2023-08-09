@@ -37,6 +37,20 @@
   right: 6px;
   cursor: pointer;
 }
+.clear__button {
+  display: flex;
+  position: absolute;
+  top: 6px;
+  right: 100px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 .search__form {
   display: flex;
   position: relative;
