@@ -3,7 +3,7 @@ import './FilterCheckbox.css';
 
 function FilterCheckbox({ isChecked, onCheck, searchText }) {
   // const { pathname } = useLocation();
-  console.log(searchText);
+  // console.log(searchText);
 
   return (
     <form className='checkbox__form'>

@@ -38,6 +38,9 @@ function Login({ onLogin, errorsFromApi, loggedIn }) {
     watch((value, { email, password }) => setChanged(true));
   }, [watch]);
 
+  console.log(changed);
+  console.log(errorsFromApi.authorize.resStatus);
+  console.log(errors?.password);
   return (
     <section className='register'>
       <div className='register__container'>
@@ -109,8 +112,8 @@ function Login({ onLogin, errorsFromApi, loggedIn }) {
               className={
                 errors?.email ||
                 errors?.password ||
-                errorsFromApi.authorize.resStatus ||
-                changed === false
+                changed === false ||
+                (errorsFromApi.authorize.resStatus && changed === false)
                   ? 'register__button-off register__button'
                   : 'register__button button'
               }

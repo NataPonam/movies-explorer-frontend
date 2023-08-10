@@ -240,6 +240,7 @@
 @media screen and (max-width: 480px) {
   .header__container.menu.active {
     width: 90%;
+    height: 100vh;
   }
   .header__button-menu {
     width: 40px;

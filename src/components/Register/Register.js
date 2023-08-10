@@ -127,8 +127,8 @@ const Register = ({ onRegister, errorsFromApi }) => {
                 errors?.name ||
                 errors?.email ||
                 errors?.password ||
-                errorsFromApi.register.resStatus ||
-                changed === false
+                changed === false ||
+                (errorsFromApi.register.resStatus && changed === false)
                   ? 'register__button-off register__button'
                   : 'register__button button'
               }
