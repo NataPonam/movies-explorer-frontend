@@ -1,9 +1,9 @@
 //Api запросов к моему серверу (сохранение данных пользователя, фильмов)
 
-//export const URL = 'https://api.natapo.nomoredomains.monster';
+export const URL = 'https://api.natapo.nomoredomains.monster';
 
 ////export const URL = 'natapo.nomoredomains.monster';
-const URL =  'http://localhost:3000';
+//const URL =  'http://localhost:3000';
 
 const checkResponse = (res) => {
   if (res.ok === true) {
