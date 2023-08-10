@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import './Header.css';
 import logo from '../../images/logo.svg';
 import iconAccount from '../../images/iconAccount.svg';
-import { useState } from 'react';
 
 function HeaderMovie() {
   const [active, setActive] = useState(false);
@@ -37,12 +37,26 @@ function HeaderMovie() {
           >
             Главная
           </Link>
-          <Link to='/movies' className='header__text-movies link'>
+          <NavLink
+            to='/movies'
+            className={({ isActive }) =>
+              isActive
+                ? 'header__text-movies bold link '
+                : 'header__text-movies link'
+            }
+          >
             Фильмы
-          </Link>
-          <Link to='/saved-movies' className='header__text-movies link'>
+          </NavLink>
+          <NavLink
+            to='/saved-movies'
+            className={({ isActive }) =>
+              isActive
+                ? 'header__text-movies bold link '
+                : 'header__text-movies link'
+            }
+          >
             Сохраненные фильмы
-          </Link>
+          </NavLink>
         </div>
         <div className='header__profile-box'>
           <Link to='/profile' className='header__text-movies_accaunt link'>

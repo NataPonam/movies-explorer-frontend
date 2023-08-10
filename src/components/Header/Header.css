@@ -75,6 +75,10 @@
   line-height: 18px;
   color: var(--blacktext);
 }
+.header__text-movies.bold {
+  font-weight: 500;
+  font-size: 14px;
+}
 
 .header__text-movies_accaunt {
   font-weight: 500;
@@ -193,7 +197,10 @@
     font-size: 18px;
     line-height: 22px;
   }
-
+  .header__text-movies.bold {
+    font-weight: 500;
+    font-size: 18px;
+  }
   .header__text-movies {
     font-weight: 500;
     font-size: 18px;
@@ -233,6 +240,7 @@
 @media screen and (max-width: 480px) {
   .header__container.menu.active {
     width: 90%;
+    height: 100vh;
   }
   .header__button-menu {
     width: 40px;

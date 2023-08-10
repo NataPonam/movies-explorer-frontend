@@ -1,31 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+
 import './Register.css';
 import '../Header/Header.css';
+import logo from '../../images/logo.svg';
 import { EMAIL } from '../../utils/constants';
 
-import logo from '../../images/logo.svg';
-const Register = () => {
+const Register = ({ onRegister, errorsFromApi }) => {
+  const [changed, setChanged] = useState(false);
   const {
     register,
-    formState: { errors },
     handleSubmit,
-    reset,
+    formState: { errors },
+    watch,
   } = useForm({
     mode: 'onChange',
+    defaultValues: { name: '', email: '', password: '' },
   });
-  const onSubmit = (data) => {
-    console.log(JSON.stringify(data));
-    reset();
-  };
+
+  function handleSubmitForm(formValues) {
+    onRegister(formValues);
+  }
+
+  useEffect(() => {
+    watch((value, { name, email, password }) => setChanged(true));
+  }, [watch]);
+
   return (
     <section className='register'>
       <div className='register__container'>
-        <img className='header__logo' src={logo} alt='логотип сайта кружок' />
+        <Link to='/'>
+          <img className='header__logo' src={logo} alt='логотип сайта кружок' />
+        </Link>
         <h1 className='register__title'>Добро пожаловать!</h1>
 
-        <form className='register__form' onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className='register__form'
+          onSubmit={handleSubmit(handleSubmitForm)}
+        >
           <lable for='name' className='register__form_lable'>
             Имя
           </lable>
@@ -60,7 +73,7 @@ const Register = () => {
           </lable>
           <input
             id='email'
-            //type='email'
+            type='email'
             className={
               errors.email
                 ? 'register__form_input type-error'
@@ -103,10 +116,27 @@ const Register = () => {
               </p>
             )}
           </span>
-
-          <button className='register__button button' type='submit'>
-            Зарегистрироваться
-          </button>
+          <div className='input__error-wrapper'>
+            <p className='input__error message'>
+              {errorsFromApi.register.resStatus
+                ? errorsFromApi.register.resErrorMessage
+                : ''}
+            </p>
+            <button
+              className={
+                errors?.name ||
+                errors?.email ||
+                errors?.password ||
+                changed === false ||
+                (errorsFromApi.register.resStatus && changed === false)
+                  ? 'register__button-off register__button'
+                  : 'register__button button'
+              }
+              type='submit'
+            >
+              Зарегистрироваться
+            </button>
+          </div>
         </form>
 
         <div className='register__box'>
@@ -121,5 +151,3 @@ const Register = () => {
 };
 
 export default Register;
-
-/**/
